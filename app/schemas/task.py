@@ -1,7 +1,7 @@
 from datetime import datetime
 
 from pydantic import BaseModel, Field
-
+from typing import Optional
 from app.models.task import TaskPriority, TaskStatus
 
 
@@ -63,13 +63,12 @@ class TaskResponse(BaseModel):
 
     id: int
     title: str
-    description: str | None
+    description: Optional[str]
     status: TaskStatus
     priority: TaskPriority
-    due_date: datetime | None
+    due_date: Optional[datetime]
     user_id: int
     created_at: datetime
     updated_at: datetime
 
-    class Config:
-        from_attributes = True
+    model_config = {"from_attributes": True}
