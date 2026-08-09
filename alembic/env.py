@@ -2,8 +2,7 @@ import os
 import sys
 from logging.config import fileConfig
 
-from sqlalchemy import engine_from_config
-from sqlalchemy import pool
+from sqlalchemy import engine_from_config, pool
 
 from alembic import context
 
@@ -11,8 +10,8 @@ sys.path.append(os.getcwd())
 
 from app.config import settings
 from app.database import Base
-from app.models.user import User  # noqa: F401
 from app.models.task import Task  # noqa: F401
+from app.models.user import User  # noqa: F401
 
 
 # this is the Alembic Config object, which provides

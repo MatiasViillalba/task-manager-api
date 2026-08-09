@@ -1,3 +1,5 @@
+import logging
+
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -18,3 +20,15 @@ class Settings(BaseSettings):
 
 
 settings = Settings()
+
+
+def configure_logging() -> None:
+    """
+    Configure application-wide logging settings.
+
+    Sets up a consistent log format and level for the entire application.
+    """
+    logging.basicConfig(
+        level=logging.INFO,
+        format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+    )
