@@ -6,7 +6,7 @@ from fastapi.responses import JSONResponse
 
 from app.config import configure_logging
 from app.exceptions import TaskManagerException
-from app.routes import auth_router
+from app.routes import auth_router, tasks_router
 
 configure_logging()
 logger = logging.getLogger(__name__)
@@ -18,6 +18,7 @@ app = FastAPI(
 )
 
 app.include_router(auth_router)
+app.include_router(tasks_router)
 
 
 @app.middleware("http")
