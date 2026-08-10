@@ -1,3 +1,4 @@
+from datetime import datetime
 from fastapi import APIRouter, Depends, HTTPException, Query, status
 from sqlalchemy.orm import Session
 from app.dependencies import get_db, get_current_user
@@ -45,6 +46,9 @@ async def create_task(
 @router.get("", response_model=PaginatedResponse[TaskResponse])
 async def get_tasks(
     status_filter: str | None = Query(default=None, alias="status"),
+    priority_filter: str | None = Query(default=None, alias="priority"),
+    due_date_from: datetime | None = Query(default=None),
+    due_date_to: datetime | None = Query(default=None),
     limit: int = Query(default=10, ge=1, le=100),
     offset: int = Query(default=0, ge=0),
     sort_by: str = Query(default="created_at"),
@@ -53,10 +57,13 @@ async def get_tasks(
     db: Session = Depends(get_db),
 ):
     """
-    List tasks belonging to the authenticated user with pagination and sorting.
+    List tasks belonging to the authenticated user with pagination, sorting and filtering.
 
     Args:
         status_filter: Optional status value to filter tasks by.
+        priority_filter: Optional priority value to filter tasks by.
+        due_date_from: Optional lower bound for the due date range.
+        due_date_to: Optional upper bound for the due date range.
         limit: Maximum number of tasks to return.
         offset: Number of tasks to skip.
         sort_by: Field to sort by (created_at, updated_at, status, priority).
@@ -71,6 +78,15 @@ async def get_tasks(
 
     if status_filter:
         query = query.filter(Task.status == status_filter)
+
+    if priority_filter:
+        query = query.filter(Task.priority == priority_filter)
+
+    if due_date_from:
+        query = query.filter(Task.due_date >= due_date_from)
+
+    if due_date_to:
+        query = query.filter(Task.due_date <= due_date_to)
 
     total = query.count()
 
