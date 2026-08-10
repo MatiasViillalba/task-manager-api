@@ -141,3 +141,35 @@ async def update_task(
     db.refresh(task)
 
     return task
+
+
+@router.delete("/{task_id}", status_code=status.HTTP_204_NO_CONTENT)
+async def delete_task(
+    task_id: int,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    """
+    Delete an existing task belonging to the authenticated user.
+
+    Args:
+        task_id: The identifier of the task to delete.
+        current_user: The authenticated user, injected from the JWT token.
+        db: Active database session.
+
+    Raises:
+        HTTPException: If the task does not exist or does not belong to the user.
+    """
+    task = (
+        db.query(Task)
+        .filter(Task.id == task_id, Task.user_id == current_user.id)
+        .first()
+    )
+
+    if not task:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="Task not found"
+        )
+
+    db.delete(task)
+    db.commit()
