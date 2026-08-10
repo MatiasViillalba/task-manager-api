@@ -4,6 +4,7 @@ from app.dependencies import get_db, get_current_user
 from app.models.user import User
 from app.models.task import Task
 from app.schemas.task import TaskCreate, TaskUpdate, TaskResponse
+from app.schemas.common import PaginatedResponse
 
 router = APIRouter(prefix="/tasks", tags=["Tasks"])
 
@@ -41,29 +42,55 @@ async def create_task(
     return new_task
 
 
-@router.get("", response_model=list[TaskResponse])
+@router.get("", response_model=PaginatedResponse[TaskResponse])
 async def get_tasks(
     status_filter: str | None = Query(default=None, alias="status"),
+    limit: int = Query(default=10, ge=1, le=100),
+    offset: int = Query(default=0, ge=0),
+    sort_by: str = Query(default="created_at"),
+    sort_order: str = Query(default="desc"),
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
 ):
     """
-    List all tasks belonging to the authenticated user.
+    List tasks belonging to the authenticated user with pagination and sorting.
 
     Args:
         status_filter: Optional status value to filter tasks by.
+        limit: Maximum number of tasks to return.
+        offset: Number of tasks to skip.
+        sort_by: Field to sort by (created_at, updated_at, status, priority).
+        sort_order: Sort direction, either asc or desc.
         current_user: The authenticated user, injected from the JWT token.
         db: Active database session.
 
     Returns:
-        A list of tasks owned by the authenticated user.
+        A paginated response containing the total count and the list of tasks.
     """
     query = db.query(Task).filter(Task.user_id == current_user.id)
 
     if status_filter:
         query = query.filter(Task.status == status_filter)
 
-    return query.all()
+    total = query.count()
+
+    allowed_sort_fields = {
+        "created_at": Task.created_at,
+        "updated_at": Task.updated_at,
+        "status": Task.status,
+        "priority": Task.priority,
+        "title": Task.title,
+    }
+    sort_column = allowed_sort_fields.get(sort_by, Task.created_at)
+
+    if sort_order == "asc":
+        query = query.order_by(sort_column.asc())
+    else:
+        query = query.order_by(sort_column.desc())
+
+    tasks = query.limit(limit).offset(offset).all()
+
+    return PaginatedResponse(total=total, limit=limit, offset=offset, items=tasks)
 
 
 @router.get("/{task_id}", response_model=TaskResponse)
