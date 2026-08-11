@@ -1,8 +1,14 @@
 # Task Manager API
 
-A production-ready REST API for managing personal tasks, built with FastAPI, PostgreSQL, and JWT authentication.
+A REST API for managing personal tasks, built with Python, FastAPI, PostgreSQL, and JWT authentication.
 
-## Features
+![Python](https://img.shields.io/badge/Python-3.12-3776AB?logo=python&logoColor=white)
+![FastAPI](https://img.shields.io/badge/FastAPI-0.115+-009688?logo=fastapi&logoColor=white)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-4169E1?logo=postgresql&logoColor=white)
+![Docker](https://img.shields.io/badge/Docker-ready-2496ED?logo=docker&logoColor=white)
+![JWT](https://img.shields.io/badge/Auth-JWT-black?logo=jsonwebtokens&logoColor=white)
+
+## ✨ Features
 
 - User registration and login with JWT authentication
 - Complete CRUD operations for tasks
@@ -15,7 +21,7 @@ A production-ready REST API for managing personal tasks, built with FastAPI, Pos
 - OpenAPI/Swagger documentation
 - Docker support
 
-## Tech Stack
+## 🛠️ Tech Stack
 
 - **Framework:** FastAPI
 - **Database:** PostgreSQL
@@ -26,25 +32,25 @@ A production-ready REST API for managing personal tasks, built with FastAPI, Pos
 - **Testing:** pytest
 - **Containerization:** Docker
 
-## Project Structure
+## 📁 Project Structure
 
     task-manager-api/
     ├── app/
-    │   ├── models/            # SQLAlchemy models (User, Task)
-    │   ├── schemas/           # Pydantic schemas (validation and serialization)
-    │   ├── routes/            # API endpoints (auth, tasks)
-    │   ├── main.py            # FastAPI application entry point
-    │   ├── config.py          # Settings loaded from environment variables
-    │   ├── database.py        # Database engine and session configuration
-    │   ├── security.py        # Password hashing and JWT utilities
-    │   ├── dependencies.py    # Reusable FastAPI dependencies
-    │   └── exceptions.py      # Custom application exceptions
-    ├── alembic/                # Database migrations
-    ├── tests/                  # Automated test suite
-    │   ├── conftest.py          # Shared fixtures and test database setup
-    │   ├── test_auth.py         # Authentication tests
-    │   ├── test_tasks.py        # Task CRUD tests
-    │   └── test_integration.py  # End-to-end workflow tests
+    │   ├── models/            
+    │   ├── schemas/           
+    │   ├── routes/           
+    │   ├── main.py           
+    │   ├── config.py          
+    │   ├── database.py      
+    │   ├── security.py        
+    │   ├── dependencies.py   
+    │   └── exceptions.py      
+    ├── alembic/               
+    ├── tests/                  
+    │   ├── conftest.py         
+    │   ├── test_auth.py         
+    │   ├── test_tasks.py        
+    │   └── test_integration.py 
     ├── Dockerfile
     ├── docker-compose.yml
     ├── requirements.txt
@@ -52,7 +58,7 @@ A production-ready REST API for managing personal tasks, built with FastAPI, Pos
     ├── .env.example
     └── README.md
 
-## Setup (local development)
+## 🚀 Setup (local development)
 
 ### Prerequisites
 
@@ -91,7 +97,7 @@ The API will be available at `http://localhost:8000`
 
 Interactive API docs: `http://localhost:8000/docs`
 
-## Setup (Docker)
+## 🐳 Setup (Docker)
 
 1. Create a `.env` file with at least a `SECRET_KEY` value.
 
@@ -101,7 +107,7 @@ Interactive API docs: `http://localhost:8000/docs`
 
 The API will be available at `http://localhost:8000`
 
-## Running Tests
+## 🧪 Running Tests
 
     pytest -v
 
@@ -136,7 +142,3 @@ The API will be available at `http://localhost:8000`
 | `due_date_to` | Filter tasks due on or before this date | none |
 | `sort_by` | Field to sort by (created_at, updated_at, status, priority, title) | created_at |
 | `sort_order` | Sort direction (asc, desc) | desc |
-
-## License
-
-This project was built for portfolio and learning purposes.
