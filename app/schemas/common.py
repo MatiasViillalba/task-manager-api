@@ -20,3 +20,14 @@ class PaginatedResponse(BaseModel, Generic[T]):
     limit: int
     offset: int
     items: list[T]
+
+
+class ErrorResponse(BaseModel):
+    """
+    Schema for consistent error responses across the API.
+
+    Attributes:
+        detail: A human-readable description of the error.
+    """
+
+    detail: str

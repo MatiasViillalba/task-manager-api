@@ -1,6 +1,6 @@
-from datetime import datetime
+from datetime import datetime, timezone
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, field_validator
 
 from app.models.task import TaskPriority, TaskStatus
 
@@ -22,6 +22,29 @@ class TaskCreate(BaseModel):
     status: TaskStatus = TaskStatus.PENDING
     priority: TaskPriority = TaskPriority.MEDIUM
     due_date: datetime | None = None
+
+    @field_validator("due_date")
+    @classmethod
+    def due_date_cannot_be_in_the_past(cls, value: datetime | None) -> datetime | None:
+        """
+        Validate that the due date, if provided, is not in the past.
+
+        Args:
+            value: The due date to validate.
+
+        Returns:
+            The validated due date.
+
+        Raises:
+            ValueError: If the due date is in the past.
+        """
+        if value is not None:
+            comparison_now = datetime.now(timezone.utc)
+            if value.tzinfo is None:
+                value = value.replace(tzinfo=timezone.utc)
+            if value < comparison_now:
+                raise ValueError("due_date cannot be in the past")
+        return value
 
 
 class TaskUpdate(BaseModel):

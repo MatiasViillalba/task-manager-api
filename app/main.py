@@ -2,6 +2,7 @@ import logging
 import time
 
 from fastapi import FastAPI, Request, status
+from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
 
 from app.config import configure_logging
@@ -63,6 +64,30 @@ async def task_manager_exception_handler(request: Request, exc: TaskManagerExcep
 
     return JSONResponse(
         status_code=status.HTTP_400_BAD_REQUEST, content={"detail": exc.message}
+    )
+
+
+@app.exception_handler(RequestValidationError)
+async def validation_exception_handler(request: Request, exc: RequestValidationError):
+    """
+    Handle Pydantic validation errors with a consistent, readable response.
+
+    Args:
+        request: The incoming HTTP request.
+        exc: The validation error raised by FastAPI/Pydantic.
+
+    Returns:
+        A JSON response with a 422 status code and readable error details.
+    """
+    errors = [
+        f"{'.'.join(str(loc) for loc in error['loc'] if loc != 'body')}: {error['msg']}"
+        for error in exc.errors()
+    ]
+    logger.warning(f"Validation error on {request.url.path}: {errors}")
+
+    return JSONResponse(
+        status_code=status.HTTP_422_UNPROCESSABLE_CONTENT,
+        content={"detail": "; ".join(errors)},
     )
 
 
