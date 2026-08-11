@@ -10,7 +10,10 @@ router = APIRouter(prefix="/auth", tags=["Authentication"])
 
 
 @router.post(
-    "/register", response_model=UserResponse, status_code=status.HTTP_201_CREATED
+    "/register",
+    response_model=UserResponse,
+    status_code=status.HTTP_201_CREATED,
+    summary="Register a new user",
 )
 async def register(user_data: UserCreate, db: Session = Depends(get_db)):
     """
@@ -43,7 +46,7 @@ async def register(user_data: UserCreate, db: Session = Depends(get_db)):
     return new_user
 
 
-@router.post("/login")
+@router.post("/login", summary="Log in and receive a JWT access token")
 async def login(credentials: UserLogin, db: Session = Depends(get_db)):
     """
     Authenticate a user and return a JWT access token.

@@ -10,7 +10,12 @@ from app.schemas.common import PaginatedResponse
 router = APIRouter(prefix="/tasks", tags=["Tasks"])
 
 
-@router.post("", response_model=TaskResponse, status_code=status.HTTP_201_CREATED)
+@router.post(
+    "",
+    response_model=TaskResponse,
+    status_code=status.HTTP_201_CREATED,
+    summary="Create a new task",
+)
 async def create_task(
     task_data: TaskCreate,
     current_user: User = Depends(get_current_user),
@@ -43,7 +48,11 @@ async def create_task(
     return new_task
 
 
-@router.get("", response_model=PaginatedResponse[TaskResponse])
+@router.get(
+    "",
+    response_model=PaginatedResponse[TaskResponse],
+    summary="List tasks with pagination and filters",
+)
 async def get_tasks(
     status_filter: str | None = Query(default=None, alias="status"),
     priority_filter: str | None = Query(default=None, alias="priority"),
@@ -109,7 +118,9 @@ async def get_tasks(
     return PaginatedResponse(total=total, limit=limit, offset=offset, items=tasks)
 
 
-@router.get("/{task_id}", response_model=TaskResponse)
+@router.get(
+    "/{task_id}", response_model=TaskResponse, summary="Get a single task by ID"
+)
 async def get_task(
     task_id: int,
     current_user: User = Depends(get_current_user),
@@ -143,7 +154,7 @@ async def get_task(
     return task
 
 
-@router.patch("/{task_id}", response_model=TaskResponse)
+@router.patch("/{task_id}", response_model=TaskResponse, summary="Update a task")
 async def update_task(
     task_id: int,
     task_data: TaskUpdate,
@@ -186,7 +197,9 @@ async def update_task(
     return task
 
 
-@router.delete("/{task_id}", status_code=status.HTTP_204_NO_CONTENT)
+@router.delete(
+    "/{task_id}", status_code=status.HTTP_204_NO_CONTENT, summary="Delete a task"
+)
 async def delete_task(
     task_id: int,
     current_user: User = Depends(get_current_user),

@@ -17,11 +17,13 @@ class TaskCreate(BaseModel):
         due_date: Optional deadline for the task.
     """
 
-    title: str = Field(min_length=1, max_length=255)
-    description: str | None = None
+    title: str = Field(min_length=1, max_length=255, examples=["Finish project report"])
+    description: str | None = Field(
+        default=None, examples=["Write the final summary and submit it"]
+    )
     status: TaskStatus = TaskStatus.PENDING
     priority: TaskPriority = TaskPriority.MEDIUM
-    due_date: datetime | None = None
+    due_date: datetime | None = Field(default=None, examples=["2026-12-31T23:59:59"])
 
     @field_validator("due_date")
     @classmethod

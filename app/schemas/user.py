@@ -12,8 +12,8 @@ class UserCreate(BaseModel):
         password: Plain text password (will be hashed before storage).
     """
 
-    email: EmailStr
-    password: str = Field(min_length=8, max_length=100)
+    email: EmailStr = Field(examples=["user@example.com"])
+    password: str = Field(min_length=8, max_length=100, examples=["securepassword123"])
 
 
 class UserResponse(BaseModel):

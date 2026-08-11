@@ -12,10 +12,30 @@ from app.routes import auth_router, tasks_router
 configure_logging()
 logger = logging.getLogger(__name__)
 
+tags_metadata = [
+    {
+        "name": "Authentication",
+        "description": "User registration and login. Returns JWT tokens used to access protected endpoints.",
+    },
+    {
+        "name": "Tasks",
+        "description": "CRUD operations for tasks. All endpoints require a valid JWT token and only expose tasks owned by the authenticated user.",
+    },
+]
+
 app = FastAPI(
     title="Task Manager API",
-    description="A production-ready REST API for managing tasks with user authentication.",
+    description=(
+        "A production-ready REST API for managing personal tasks. "
+        "Supports user registration, JWT authentication, full CRUD operations on tasks, "
+        "pagination, sorting, and filtering by status, priority and due date."
+    ),
     version="1.0.0",
+    openapi_tags=tags_metadata,
+    contact={
+        "name": "Matias",
+        "url": "https://github.com/MatiasViillalba/task-manager-api",
+    },
 )
 
 app.include_router(auth_router)
