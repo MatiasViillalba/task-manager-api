@@ -56,9 +56,13 @@ class Task(Base):
     id = Column(Integer, primary_key=True, index=True)
     title = Column(String(255), nullable=False, index=True)
     description = Column(Text, nullable=True)
-    status = Column(Enum(TaskStatus), default=TaskStatus.PENDING, nullable=False)
-    priority = Column(Enum(TaskPriority), default=TaskPriority.MEDIUM, nullable=False)
-    due_date = Column(DateTime, nullable=True)
+    status = Column(
+        Enum(TaskStatus), default=TaskStatus.PENDING, nullable=False, index=True
+    )
+    priority = Column(
+        Enum(TaskPriority), default=TaskPriority.MEDIUM, nullable=False, index=True
+    )
+    due_date = Column(DateTime, nullable=True, index=True)
     user_id = Column(Integer, ForeignKey("users.id"), nullable=False, index=True)
     created_at = Column(DateTime, default=func.now(), nullable=False)
     updated_at = Column(
