@@ -240,3 +240,49 @@ def test_filter_by_priority(client):
     data = response.json()
     assert data["total"] == 1
     assert data["items"][0]["title"] == "High priority"
+
+
+def test_create_task_with_empty_title_fails(client):
+    """
+    Test that creating a task with an empty title fails validation.
+    """
+    headers = register_and_login(client, "emptytitle@example.com", "securepass123")
+
+    response = client.post("/tasks", json={"title": ""}, headers=headers)
+
+    assert response.status_code == 422
+
+
+def test_create_task_with_title_too_long_fails(client):
+    """
+    Test that creating a task with a title over 255 characters fails validation.
+    """
+    headers = register_and_login(client, "longtitle@example.com", "securepass123")
+
+    response = client.post("/tasks", json={"title": "a" * 256}, headers=headers)
+
+    assert response.status_code == 422
+
+
+def test_update_nonexistent_task_returns_404(client):
+    """
+    Test that updating a task that doesn't exist returns 404.
+    """
+    headers = register_and_login(client, "updatenone@example.com", "securepass123")
+
+    response = client.patch(
+        "/tasks/99999", json={"status": "completed"}, headers=headers
+    )
+
+    assert response.status_code == 404
+
+
+def test_delete_nonexistent_task_returns_404(client):
+    """
+    Test that deleting a task that doesn't exist returns 404.
+    """
+    headers = register_and_login(client, "deletenone@example.com", "securepass123")
+
+    response = client.delete("/tasks/99999", headers=headers)
+
+    assert response.status_code == 404
